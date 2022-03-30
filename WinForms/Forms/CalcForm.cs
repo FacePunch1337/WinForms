@@ -115,12 +115,6 @@ namespace WinForms.Forms
             else labelHistory.Text = "";
         }
 
-        private void buttonResult_Click(object sender, EventArgs e)
-        {
-            var result = new DataTable().Compute(labelHistory.Text.Replace('x', '*').Replace('÷', '/'), null);
-            labelDisplay.Text = result.ToString();
-        }
-
         private void buttonSquare_Click(object sender, EventArgs e)
         {
             if (labelHistory.Text != "" && labelDisplay.Text != "")
@@ -135,6 +129,12 @@ namespace WinForms.Forms
                 labelHistory.Text = "";
                 labelDisplay.Text = "0";
             }
+        }
+
+        private void buttonResult_Click(object sender, EventArgs e)
+        {
+            var result = new DataTable().Compute(labelHistory.Text.Replace('x', '*').Replace('÷', '/'), null);
+            labelDisplay.Text = result.ToString();
         }
 
         private void Calc_Load(object sender, EventArgs e)
