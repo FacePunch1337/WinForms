@@ -7,14 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Data;
+
+
 
 
 namespace WinForms.Forms
 {
     public partial class Calc : Form
     {
-
+        
         public Calc()
         {
             InitializeComponent();
@@ -25,20 +26,22 @@ namespace WinForms.Forms
             var clickedButton = sender as Button;
             if (clickedButton == null) return;
 
-            int lim = 9;
-            if (labelDisplay.Text.Contains('-')) lim++;
-            if (labelDisplay.Text.Contains('.')) lim++;
-            if (labelDisplay.Text.Length >= lim) return;
+            int lim_display = 9;
+            if (labelDisplay.Text.Contains('-')) lim_display++;
+            if (labelDisplay.Text.Contains('.')) lim_display++;
+            if (labelDisplay.Text.Length >= lim_display) return;
+            int lim_history = 30;
+            if (labelHistory.Text.Contains('-')) lim_history++;
+            if (labelHistory.Text.Contains('.')) lim_history++;
+            if (labelHistory.Text.Length >= lim_history) return;
 
             if (labelDisplay.Text.Equals("0"))
             {
                 labelDisplay.Text = clickedButton.Text;
-
-
             }
             else
             {
-                labelDisplay.Text += clickedButton.Text;
+                labelDisplay.Text += Convert.ToDouble(clickedButton.Text);
             }
             labelHistory.Text += clickedButton.Text;
             if (labelHistory.Text.Contains("+")) buttonResult_Click(sender, e);
@@ -58,6 +61,8 @@ namespace WinForms.Forms
             }
             else
             {
+                char[] charsToTrim = { 's', 'q', 'r' };
+                var num = labelHistory.Text.Trim(charsToTrim).Replace("(", "").Replace(")", "");
                 labelDisplay.Text = "-" + labelDisplay.Text;
                 labelHistory.Text = "-" + labelHistory.Text;
             }
@@ -100,7 +105,7 @@ namespace WinForms.Forms
         private void buttonMinus_Click(object sender, EventArgs e)
         {
             if (labelHistory.Text != "") labelHistory.Text += " - ";
-            else labelHistory.Text = "";
+            else labelHistory.Text = "()";
         }
 
         private void buttonDivision_Click(object sender, EventArgs e)
@@ -117,12 +122,27 @@ namespace WinForms.Forms
 
         private void buttonSquare_Click(object sender, EventArgs e)
         {
+            
             if (labelHistory.Text != "" && labelDisplay.Text != "")
             {
-                int value = Convert.ToInt32(labelDisplay.Text);
-                value *= value;
-                labelHistory.Text = value.ToString();
-                labelDisplay.Text = value.ToString();
+                if (labelDisplay.Text.Contains(","))
+                {
+                    var enter = Convert.ToDouble(labelDisplay.Text);
+                    double value = Math.Pow(enter, 2);
+                    labelHistory.Text = $"sqr({value.ToString()})";
+                    labelDisplay.Text = value.ToString();
+                }
+                else
+                {
+
+                    var enter = Convert.ToInt32(labelDisplay.Text);
+                    int value = enter;
+
+                    value *= value;
+                    labelHistory.Text = $"sqr({value.ToString()})";
+                    labelDisplay.Text = value.ToString();
+
+                }
             }
             else
             {
@@ -133,8 +153,28 @@ namespace WinForms.Forms
 
         private void buttonResult_Click(object sender, EventArgs e)
         {
-            var result = new DataTable().Compute(labelHistory.Text.Replace('x', '*').Replace('÷', '/'), null);
+            char[] charsToTrim = { 's', 'q', 'r' };
+            var num = labelHistory.Text.Trim(charsToTrim).Replace("(", "").Replace(")", "");
+
+            var result = new DataTable().Compute(num.Replace("÷", "/").Replace(",", "."),  null);
             labelDisplay.Text = result.ToString();
+        }
+
+
+
+        private void ButtonDot_Click(object sender, EventArgs e)
+        {
+            if (labelDisplay.Text == "0")
+            {
+                labelHistory.Text = "0" + ",";
+            }
+            else
+            {
+                labelHistory.Text += ",";
+            }
+
+            if (!labelDisplay.Text.Contains(","))
+                labelDisplay.Text += ",";
         }
 
         private void Calc_Load(object sender, EventArgs e)

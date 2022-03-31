@@ -51,6 +51,7 @@ namespace WinForms.Forms
             this.buttonC = new System.Windows.Forms.Button();
             this.labelHistory = new System.Windows.Forms.Label();
             this.buttonSquare = new System.Windows.Forms.Button();
+            this.ButtonDot = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // labelDisplay
@@ -191,7 +192,7 @@ namespace WinForms.Forms
             this.buttonResult.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.buttonResult.Location = new System.Drawing.Point(200, 309);
             this.buttonResult.Name = "buttonResult";
-            this.buttonResult.Size = new System.Drawing.Size(56, 49);
+            this.buttonResult.Size = new System.Drawing.Size(56, 52);
             this.buttonResult.TabIndex = 9;
             this.buttonResult.Text = "=";
             this.buttonResult.UseVisualStyleBackColor = true;
@@ -202,7 +203,7 @@ namespace WinForms.Forms
             this.buttonDivision.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.buttonDivision.Location = new System.Drawing.Point(138, 309);
             this.buttonDivision.Name = "buttonDivision";
-            this.buttonDivision.Size = new System.Drawing.Size(56, 49);
+            this.buttonDivision.Size = new System.Drawing.Size(56, 52);
             this.buttonDivision.TabIndex = 16;
             this.buttonDivision.Text = "÷";
             this.buttonDivision.UseVisualStyleBackColor = true;
@@ -224,7 +225,7 @@ namespace WinForms.Forms
             this.button0.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.button0.Location = new System.Drawing.Point(76, 309);
             this.button0.Name = "button0";
-            this.button0.Size = new System.Drawing.Size(56, 49);
+            this.button0.Size = new System.Drawing.Size(56, 52);
             this.button0.TabIndex = 14;
             this.button0.Text = "0";
             this.button0.UseVisualStyleBackColor = true;
@@ -235,7 +236,7 @@ namespace WinForms.Forms
             this.button16.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.button16.Location = new System.Drawing.Point(14, 309);
             this.button16.Name = "button16";
-            this.button16.Size = new System.Drawing.Size(56, 49);
+            this.button16.Size = new System.Drawing.Size(56, 23);
             this.button16.TabIndex = 13;
             this.button16.Text = "±";
             this.button16.UseVisualStyleBackColor = true;
@@ -295,12 +296,25 @@ namespace WinForms.Forms
             this.buttonSquare.UseVisualStyleBackColor = true;
             this.buttonSquare.Click += new System.EventHandler(this.buttonSquare_Click);
             // 
+            // ButtonDot
+            // 
+            this.ButtonDot.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.ButtonDot.Location = new System.Drawing.Point(14, 338);
+            this.ButtonDot.Name = "ButtonDot";
+            this.ButtonDot.Size = new System.Drawing.Size(56, 23);
+            this.ButtonDot.TabIndex = 22;
+            this.ButtonDot.Text = "•";
+            this.ButtonDot.UseVisualStyleBackColor = true;
+            this.ButtonDot.Click += new System.EventHandler(this.ButtonDot_Click);
+            // 
             // Calc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
+            this.CausesValidation = false;
             this.ClientSize = new System.Drawing.Size(271, 373);
+            this.Controls.Add(this.ButtonDot);
             this.Controls.Add(this.buttonSquare);
             this.Controls.Add(this.labelHistory);
             this.Controls.Add(this.buttonC);
@@ -356,5 +370,6 @@ namespace WinForms.Forms
         private System.Windows.Forms.Button buttonC;
         private System.Windows.Forms.Label labelHistory;
         private System.Windows.Forms.Button buttonSquare;
+        private System.Windows.Forms.Button ButtonDot;
     }
 }
