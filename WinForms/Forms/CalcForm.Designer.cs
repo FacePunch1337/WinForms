@@ -59,9 +59,9 @@ namespace WinForms.Forms
             this.labelDisplay.BackColor = System.Drawing.Color.White;
             this.labelDisplay.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.labelDisplay.Font = new System.Drawing.Font("Consolas", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.labelDisplay.Location = new System.Drawing.Point(12, 42);
+            this.labelDisplay.Location = new System.Drawing.Point(15, 65);
             this.labelDisplay.Name = "labelDisplay";
-            this.labelDisplay.Size = new System.Drawing.Size(244, 34);
+            this.labelDisplay.Size = new System.Drawing.Size(244, 38);
             this.labelDisplay.TabIndex = 0;
             this.labelDisplay.Text = "0";
             this.labelDisplay.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -183,7 +183,7 @@ namespace WinForms.Forms
             this.buttonMultiplication.Name = "buttonMultiplication";
             this.buttonMultiplication.Size = new System.Drawing.Size(56, 49);
             this.buttonMultiplication.TabIndex = 10;
-            this.buttonMultiplication.Text = "*";
+            this.buttonMultiplication.Text = "x";
             this.buttonMultiplication.UseVisualStyleBackColor = true;
             this.buttonMultiplication.Click += new System.EventHandler(this.buttonMultiplication_Click);
             // 
@@ -249,7 +249,7 @@ namespace WinForms.Forms
             this.buttonCL.Name = "buttonCL";
             this.buttonCL.Size = new System.Drawing.Size(56, 23);
             this.buttonCL.TabIndex = 17;
-            this.buttonCL.Text = "<";
+            this.buttonCL.Text = "⌫";
             this.buttonCL.UseVisualStyleBackColor = true;
             this.buttonCL.Click += new System.EventHandler(this.buttonCL_Click);
             // 
@@ -279,9 +279,9 @@ namespace WinForms.Forms
             // 
             this.labelHistory.BackColor = System.Drawing.Color.White;
             this.labelHistory.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.labelHistory.Location = new System.Drawing.Point(12, 9);
+            this.labelHistory.Location = new System.Drawing.Point(15, 24);
             this.labelHistory.Name = "labelHistory";
-            this.labelHistory.Size = new System.Drawing.Size(244, 23);
+            this.labelHistory.Size = new System.Drawing.Size(244, 26);
             this.labelHistory.TabIndex = 20;
             this.labelHistory.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NLog;
 
 
 
@@ -15,10 +16,11 @@ namespace WinForms.Forms
 {
     public partial class Calc : Form
     {
-        
+        private static Logger logger;
         public Calc()
         {
             InitializeComponent();
+            logger = NLog.LogManager.GetCurrentClassLogger();
         }
 
         private void buttonDigit_Click(object sender, EventArgs e)
@@ -46,7 +48,7 @@ namespace WinForms.Forms
             labelHistory.Text += clickedButton.Text;
             if (labelHistory.Text.Contains("+")) buttonResult_Click(sender, e);
             if (labelHistory.Text.Contains("-")) buttonResult_Click(sender, e);
-            if (labelHistory.Text.Contains("*")) buttonResult_Click(sender, e);
+            if (labelHistory.Text.Contains("x")) buttonResult_Click(sender, e);
             if (labelHistory.Text.Contains("÷")) buttonResult_Click(sender, e);
 
         }
@@ -116,7 +118,7 @@ namespace WinForms.Forms
 
         private void buttonMultiplication_Click(object sender, EventArgs e)
         {
-            if (labelHistory.Text != "") labelHistory.Text += " * ";
+            if (labelHistory.Text != "") labelHistory.Text += " x ";
             else labelHistory.Text = "";
         }
 
@@ -153,14 +155,25 @@ namespace WinForms.Forms
 
         private void buttonResult_Click(object sender, EventArgs e)
         {
-            char[] charsToTrim = { 's', 'q', 'r' };
-            var num = labelHistory.Text.Trim(charsToTrim).Replace("(", "").Replace(")", "");
 
-            var result = new DataTable().Compute(num.Replace("÷", "/").Replace(",", "."),  null);
-            labelDisplay.Text = result.ToString();
+            try
+            {
+                char[] charsToTrim = { 's', 'q', 'r' };
+                var num = labelHistory.Text.Trim(charsToTrim).Replace("(", "").Replace(")", "");
+
+                var result = new DataTable().Compute(num.Replace("x", "*").Replace("÷", "/").Replace(",", "."), null);
+                labelDisplay.Text = result.ToString();
+            }
+            catch (Exception ex)
+            {
+                labelDisplay.Text = "Ошибка";
+                logger.Error(ex.ToString());
+                
+            }
+            
+
+            
         }
-
-
 
         private void ButtonDot_Click(object sender, EventArgs e)
         {
@@ -181,5 +194,14 @@ namespace WinForms.Forms
         {
 
         }
+    }
+
+    enum Operations
+    {
+        None,
+        Add,
+        Sub,
+        Mul,
+        Div
     }
 }
