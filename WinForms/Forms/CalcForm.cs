@@ -16,10 +16,12 @@ namespace WinForms.Forms
 {
     public partial class Calc : Form
     {
+        //Создание объекта logger
         private static Logger logger;
         public Calc()
         {
             InitializeComponent();
+            //Инициализация объекта logger
             logger = NLog.LogManager.GetCurrentClassLogger();
         }
 
@@ -155,9 +157,10 @@ namespace WinForms.Forms
 
         private void buttonResult_Click(object sender, EventArgs e)
         {
-
+            //Обработка исключительных ситуаций при вычеслении
             try
             {
+               
                 char[] charsToTrim = { 's', 'q', 'r' };
                 var num = labelHistory.Text.Trim(charsToTrim).Replace("(", "").Replace(")", "");
 
@@ -166,7 +169,9 @@ namespace WinForms.Forms
             }
             catch (Exception ex)
             {
-                labelDisplay.Text = "Ошибка";
+             
+                labelDisplay.Text = "ERROR";
+                //Логирование исключения
                 logger.Error(ex.ToString());
                 
             }
