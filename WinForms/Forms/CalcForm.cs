@@ -172,7 +172,7 @@ namespace WinForms.Forms
              
                 labelDisplay.Text = "ERROR";
                 //Логирование исключения
-                logger.Error(ex.ToString());
+                logger.Error(ex);
                 
             }
             
