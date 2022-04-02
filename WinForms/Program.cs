@@ -27,10 +27,11 @@ namespace WinForms
                 });
 
             NLog.LogManager.Configuration = nlogConfig;
+            NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+            logger = NLog.LogManager.GetCurrentClassLogger();
 
-           
 
-            Application.Run(new Forms.Calc());
+            Application.Run(new Forms.Calc(logger));
 
            
 

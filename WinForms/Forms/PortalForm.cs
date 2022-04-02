@@ -12,11 +12,12 @@ namespace WinForms.Forms
 {
     public partial class PortalForm : Form
     {
-        
-       
-        public PortalForm()
+
+        private readonly NLog.Logger _logger;
+        public PortalForm(NLog.Logger logger)
         {
             InitializeComponent();
+            _logger = logger;
         }
 
         private void linkLabelToControl_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -26,7 +27,7 @@ namespace WinForms.Forms
 
         private void linkCalc_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            new Calc().ShowDialog();
+            new Calc(_logger).ShowDialog();
         }
     }
 }

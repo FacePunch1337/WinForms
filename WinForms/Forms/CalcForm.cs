@@ -17,12 +17,60 @@ namespace WinForms.Forms
     public partial class Calc : Form
     {
         //Создание объекта logger
-        private static Logger logger;
-        public Calc()
+        private readonly NLog.Logger _logger;
+        private Operations operation;
+        private int firstArg;
+        public Calc(NLog.Logger logger)
         {
             InitializeComponent();
             //Инициализация объекта logger
-            logger = NLog.LogManager.GetCurrentClassLogger();
+            _logger = logger;
+            operation = Operations.None;
+
+        }
+
+
+
+        private void buttonOperation_Click(object sender, EventArgs e)
+        {
+            var clickedButton = sender as Button;
+            if (clickedButton == null)
+            {
+                // Exception: invalid sender. Log'em it
+                return;
+            }
+
+            if (clickedButton == buttonPlus) operation = Operations.Plus;
+            else if (clickedButton == buttonMinus) operation = Operations.Minus;
+            else if (clickedButton == buttonMultiplication) operation = Operations.Multiplication;
+            else if (clickedButton == buttonDivision) operation = Operations.Division;
+
+            else
+            {
+                // Exception: invalid button. Log'em it
+                _logger.Error("Invalid button {0}", sender.ToString());
+                return;
+            }
+            switch (operation)
+            {
+                case Operations.None:
+                    break;
+                case Operations.Plus:
+                    buttonPlus_Click(clickedButton, e);
+                    break;
+                case Operations.Minus:
+                    buttonMinus_Click(clickedButton, e);
+                    break;
+                case Operations.Multiplication:
+                    buttonMultiplication_Click(clickedButton, e);
+                    break;
+                case Operations.Division:
+                    buttonDivision_Click(clickedButton, e);
+                    break;
+
+            }
+
+
         }
 
         private void buttonDigit_Click(object sender, EventArgs e)
@@ -109,7 +157,7 @@ namespace WinForms.Forms
         private void buttonMinus_Click(object sender, EventArgs e)
         {
             if (labelHistory.Text != "") labelHistory.Text += " - ";
-            else labelHistory.Text = "()";
+            else labelHistory.Text = "";
         }
 
         private void buttonDivision_Click(object sender, EventArgs e)
@@ -126,7 +174,7 @@ namespace WinForms.Forms
 
         private void buttonSquare_Click(object sender, EventArgs e)
         {
-            
+
             if (labelHistory.Text != "" && labelDisplay.Text != "")
             {
                 if (labelDisplay.Text.Contains(","))
@@ -160,7 +208,7 @@ namespace WinForms.Forms
             //Обработка исключительных ситуаций при вычеслении
             try
             {
-               
+
                 char[] charsToTrim = { 's', 'q', 'r' };
                 var num = labelHistory.Text.Trim(charsToTrim).Replace("(", "").Replace(")", "");
 
@@ -169,15 +217,15 @@ namespace WinForms.Forms
             }
             catch (Exception ex)
             {
-             
+
                 labelDisplay.Text = "ERROR";
                 //Логирование исключения
-                logger.Error(ex);
-                
-            }
-            
+                _logger.Error(ex);
 
-            
+            }
+
+
+
         }
 
         private void ButtonDot_Click(object sender, EventArgs e)
@@ -197,16 +245,54 @@ namespace WinForms.Forms
 
         private void Calc_Load(object sender, EventArgs e)
         {
+           /* foreach (var cont in Controls)
+            {
+                if(cont is Button)
+                {
+                    (cont as Button).
+                }
+            }*/
+            
+        }
 
+
+
+        //Бинарный режим 
+        private void checkBoxBinary_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxBinary.Checked)
+            {
+                button2.Enabled = false;
+                button3.Enabled = false;
+                button4.Enabled = false;
+                button5.Enabled = false;
+                button6.Enabled = false;
+                button7.Enabled = false;
+                button8.Enabled = false;
+                button9.Enabled = false;
+            }
+            else
+            {
+                button2.Enabled = true;
+                button3.Enabled = true;
+                button4.Enabled = true;
+                button5.Enabled = true;
+                button6.Enabled = true;
+                button7.Enabled = true;
+                button8.Enabled = true;
+                button9.Enabled = true;
+            }
         }
     }
+
+
 
     enum Operations
     {
         None,
-        Add,
-        Sub,
-        Mul,
-        Div
+        Plus,
+        Minus,
+        Multiplication,
+        Division
     }
 }
