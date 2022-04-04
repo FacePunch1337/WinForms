@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="NLog" Version="4.7.15" />
+    <PackageReference Include="Unity.NetCore" Version="4.0.3" />
   </ItemGroup>
 
 </Project>

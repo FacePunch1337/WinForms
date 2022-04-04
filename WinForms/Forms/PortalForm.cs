@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Practices.Unity;
+
 
 namespace WinForms.Forms
 {
@@ -27,6 +29,11 @@ namespace WinForms.Forms
         private void linkCalc_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             new Calc().ShowDialog();
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Program.Container.Resolve<Forms.ProgressForm>().ShowDialog();
         }
     }
 }
