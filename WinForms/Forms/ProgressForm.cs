@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -16,14 +17,22 @@ namespace WinForms.Forms
 
         private readonly NLog.Logger _logger;
         private readonly Random _random;
+        private CancellationTokenSource cts;
         private float progressTime;
+        //private bool stopPressed;
+        private int progressState;
+        private bool press;
+        
+
+
 
         public ProgressForm(NLog.Logger logger, Random random)
         {
             _random = random;
-            _logger = logger;   
+            _logger = logger;
+            cts = null;
             InitializeComponent();
-            
+
         }
 
         private void ProgressForm_Load(object sender, EventArgs e)
@@ -34,12 +43,14 @@ namespace WinForms.Forms
 
             listBoxStyle.SelectedIndex = 1;
 
+
             comboBoxBarTime.Items.Add("1");
-            comboBoxBarTime.Items.Add("2");
+            comboBoxBarTime.Items.Add("2.5");
             comboBoxBarTime.Items.Add("3");
 
-            comboBoxBarTime.SelectedIndex = 1;
-            progressTime = 2;
+            comboBoxBarTime.SelectedIndex = 0;
+            progressTime = 0;
+
 
             progressBarStyle.Minimum = 0;
             progressBarStyle.Maximum = 100;
@@ -52,25 +63,98 @@ namespace WinForms.Forms
             //MessageBox.Show(listBoxStyle.SelectedItem.ToString());
             progressBarStyle.Height = ((BarStyle)listBoxStyle.SelectedItem).Height;
         }
-
-        private void buttonStart_Click(object sender, EventArgs e)
+        private void UpdateProgress()
         {
-            for (int i = 0; i < 10; i++)
-            {
-                progressBarStyle.Value = (i + 1) * 10;
-                Thread.Sleep((int)(progressTime * 100));
-            }
+            progressBarStyle.Value = progressState;
         }
 
-        private void comboBoxBarTime_SelectedIndexChanged(object sender, EventArgs e)
+        private void StartHandler(object obj)
+        {
+            //stopPressed = false;
+            if (!(obj is CancellationToken)) return;
+            CancellationToken token = (CancellationToken)obj;
+            
+            for (int i = 0; i < 10; i++)
+            {
+                var tmp = progressState;
+                progressState = (i + 1) * 10;
+                this.Invoke((Action)UpdateProgress);
+
+                Thread.Sleep((int)(progressTime * 100));
+                // if (stopPressed) break;
+
+                if (token.IsCancellationRequested) break;
+
+                
+            }
+            
+        }
+
+      
+        private void buttonStart_Click(object sender, EventArgs e)
+        {
+            cts = new CancellationTokenSource();
+            Task.Run(() => StartHandler(cts.Token));
+
+        }
+
+
+
+       
+        //Событие изменения текста
+        private void comboBoxText_Update(object sender, EventArgs e)
         {
 
-            //if (comboBoxBarTime.SelectedIndex == -1) return;
+            try
+            {
+                progressTime = float.Parse(comboBoxBarTime.Text.Replace(".", ","));
+                if (comboBoxBarTime.Text.Contains("-") || progressTime <= 0 || progressTime > 10)
+                {
+                    comboBoxBarTime.Text = "1";
+                }
 
-            if (comboBoxBarTime.Text == String.Empty) return;
-            progressTime = Convert.ToInt32(comboBoxBarTime.Text);
-            
-            
+
+            }
+            catch
+            {
+                comboBoxBarTime.Text = string.Empty;
+            }
+
+
+        }
+
+
+
+        private void buttonStop_Click(object sender, EventArgs e)
+        {
+            //stopPressed = true;
+            cts?.Cancel();
+        }
+
+        private void buttonPause_Click(object sender, EventArgs e)
+        {
+           
+            if (press == false)
+            {
+                press = true;
+                buttonPause.Text = "continue";
+                cts?.Cancel();
+                this.Invoke((Action)UpdateProgress);
+            }
+            else if(press == true)
+            {
+                
+                press = false;
+                buttonPause.Text = "pause";
+
+                cts = new CancellationTokenSource();
+                Task.Run(() => StartHandler(cts.Token));
+            }
+
+
+
+
+
         }
     }
 
