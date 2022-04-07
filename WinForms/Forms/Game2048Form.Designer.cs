@@ -48,6 +48,7 @@ namespace WinForms.Forms
             this.cell00 = new System.Windows.Forms.Label();
             this.panelDisplay = new System.Windows.Forms.Panel();
             this.labelStat = new System.Windows.Forms.Label();
+            this.panelSensore = new System.Windows.Forms.Panel();
             this.panelGameField.SuspendLayout();
             this.panelDisplay.SuspendLayout();
             this.SuspendLayout();
@@ -258,7 +259,7 @@ namespace WinForms.Forms
             this.panelDisplay.Controls.Add(this.labelStat);
             this.panelDisplay.Location = new System.Drawing.Point(12, 12);
             this.panelDisplay.Name = "panelDisplay";
-            this.panelDisplay.Size = new System.Drawing.Size(231, 81);
+            this.panelDisplay.Size = new System.Drawing.Size(112, 81);
             this.panelDisplay.TabIndex = 1;
             // 
             // labelStat
@@ -270,11 +271,22 @@ namespace WinForms.Forms
             this.labelStat.TabIndex = 0;
             this.labelStat.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // panelSensore
+            // 
+            this.panelSensore.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panelSensore.Location = new System.Drawing.Point(132, 13);
+            this.panelSensore.Name = "panelSensore";
+            this.panelSensore.Size = new System.Drawing.Size(111, 80);
+            this.panelSensore.TabIndex = 2;
+            this.panelSensore.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelSensore_MouseDown);
+            this.panelSensore.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panelSensore_MouseUp);
+            // 
             // Game2048Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(259, 342);
+            this.Controls.Add(this.panelSensore);
             this.Controls.Add(this.panelDisplay);
             this.Controls.Add(this.panelGameField);
             this.Name = "Game2048Form";
@@ -308,5 +320,6 @@ namespace WinForms.Forms
         private System.Windows.Forms.Label cell11;
         private System.Windows.Forms.Label cell10;
         private System.Windows.Forms.Label labelStat;
+        private System.Windows.Forms.Panel panelSensore;
     }
 }

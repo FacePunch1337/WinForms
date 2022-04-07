@@ -23,15 +23,11 @@ namespace WinForms.Forms
 
         private void Game2048Form_Load(object sender, EventArgs e)
         {
-
             panelGameField.BackColor = Color.FromArgb(0xBB, 0xAD, 0xA0);
             ClearGameField();
             AddCell();
-            
             ColorCells();
-            Stat();
-
-
+            this.ActiveControl = null;
         }
 
         private void ColorCells()
@@ -152,10 +148,10 @@ namespace WinForms.Forms
 
             switch (e.KeyCode)
             {
-                case Keys.Left:  if (MoveLeft()) { AddCell(); ColorCells(); } else MessageBox.Show("no move"); break;
-                case Keys.Right: if (MoveRight()) { AddCell(); ColorCells(); } else MessageBox.Show("no move"); break;
-                case Keys.Up:    if (MoveUp())    { AddCell(); ColorCells(); } else MessageBox.Show("no move"); break;
-                case Keys.Down:  if (MoveDown()) { AddCell(); ColorCells(); } else MessageBox.Show("no move"); break;
+                case Keys.Left: MakeMove(MoveDirection.Left); break;
+                case Keys.Right: MakeMove(MoveDirection.Right); break;
+                case Keys.Up: MakeMove(MoveDirection.Up); break;
+                case Keys.Down: MakeMove(MoveDirection.Down); break;
 
                 case Keys.Escape: Close(); break;
             }
@@ -369,33 +365,35 @@ namespace WinForms.Forms
 
         }
 
+        private void MakeMove(MoveDirection direction)
+        {
+            switch (direction)
+            {
+                case MoveDirection.Left:
+                    if (MoveLeft()) { AddCell(); ColorCells(); return; } break;
+                case MoveDirection.Right:
+                    if (MoveRight()) { AddCell(); ColorCells(); return; } break;
+                case MoveDirection.Up:
+                    if (MoveUp()) { AddCell(); ColorCells(); return; } break;
+                case MoveDirection.Down:
+                    if (MoveDown()) { AddCell(); ColorCells(); return; } break;
+                
+            }
+        }
+
         private void Stat()
         {
 
             foreach (Label item in panelGameField.Controls)
             {
                 
-                if(item.Text != stat_value.ToString())
+                if(item.Text == stat_value.ToString())
                 {
-               
-                
-               
+
                     labelStat.Text = item.Text;
                 }
-                
-                    
+      
             }
-
-           
-
-
-
-
-
-
-
-
-
 
         }
 
@@ -403,5 +401,56 @@ namespace WinForms.Forms
         {
             return (Label) panelGameField.Controls.Find("cell" + i + j, false)[0];
         }
+
+        private Point DownPoint, UpPoint;
+
+
+        private void panelSensore_MouseDown(object sender, MouseEventArgs e)
+        {
+            DownPoint.X = e.X;
+            DownPoint.Y = e.Y;
+            SensoreMove();
+        }
+
+        private void panelSensore_MouseUp(object sender, MouseEventArgs e)
+        {
+            UpPoint.X = e.X;
+            UpPoint.Y = e.Y;
+            SensoreMove();
+        }
+
+        private void SensoreMove()
+        {
+            if(Math.Abs(UpPoint.X - DownPoint.X) < Math.Abs(UpPoint.Y - DownPoint.Y))
+            {
+                if(UpPoint.Y < DownPoint.Y) // Up
+                {
+                    MakeMove(MoveDirection.Up);
+                }
+                else  // Down
+                {
+                    MakeMove(MoveDirection.Down);
+                }
+            }
+            else 
+            {
+                if (UpPoint.X < DownPoint.X) //Left
+                {
+                    MakeMove(MoveDirection.Left);
+                }
+                else //Right
+                {
+                    MakeMove(MoveDirection.Right);
+                }
+            }
+        }
+    }
+
+    enum MoveDirection
+    {
+        Left,
+        Right,
+        Up,
+        Down
     }
 }
