@@ -45,7 +45,7 @@ namespace WinForms
             
            
 
-            Application.Run(Container.Resolve<Forms.ProgressForm>());
+            Application.Run(Container.Resolve<Forms.Game2048Form>());
 
            
 

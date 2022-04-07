@@ -74,9 +74,9 @@ namespace WinForms.Forms
             if (!(obj is CancellationToken)) return;
             CancellationToken token = (CancellationToken)obj;
             
-            for (int i = 0; i < 10; i++)
+            for (int i = progressState; i < 10; i++)
             {
-                var tmp = progressState;
+               
                 progressState = (i + 1) * 10;
                 this.Invoke((Action)UpdateProgress);
 
@@ -87,6 +87,8 @@ namespace WinForms.Forms
 
                 
             }
+
+          
             
         }
 
