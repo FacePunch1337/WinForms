@@ -14,10 +14,14 @@ namespace WinForms.Forms
     {
         private readonly Random _random;
         private int stat_value;
+        private int timeMs;
+        private int animTick;
+        private Label appearLabel;
 
         public Game2048Form(Random random)
         {
             _random = random;
+            appearLabel = null!;
             InitializeComponent();
         }
 
@@ -28,6 +32,9 @@ namespace WinForms.Forms
             AddCell();
             ColorCells();
             this.ActiveControl = null;
+            timeMs = 0;
+            timerClock.Start();
+            //timerAnim.Start();
         }
 
         private void ColorCells()
@@ -94,6 +101,8 @@ namespace WinForms.Forms
                             lbl.ForeColor = Color.FromArgb(0xF9, 0xF6, 0xF2);
                             break;
                     }
+
+                    lbl.Tag = new AnimData { BackColor = lbl.BackColor };   
                 }
             }
         }
@@ -140,6 +149,9 @@ namespace WinForms.Forms
                 _random.Next(10) == 0
                 ? "4"
                 : "2";
+            appearLabel = lbl;
+            animTick = 0;
+           // timerAnim.Start();
         }
 
         private void Game2048Form_KeyDown(object sender, KeyEventArgs e)
@@ -419,6 +431,42 @@ namespace WinForms.Forms
             SensoreMove();
         }
 
+        private void timerClock_Tick(object sender, EventArgs e)
+        {
+            timeMs += 100;
+            var ts = TimeSpan.FromMilliseconds(timeMs);
+            if(ts.Seconds < 10)
+            {
+                labelTime.Text = $"0{ts.Hours}:0{ts.Minutes}:0{ts.Seconds}";  
+            }
+            else if(ts.Minutes < 10)
+            {
+                labelTime.Text = $"0{ts.Hours}:0{ts.Minutes}:{ts.Seconds}";
+            }
+
+            else if (ts.Hours < 10)
+            {
+                labelTime.Text = $"0{ts.Hours}:{ts.Minutes}:{ts.Seconds}";
+            }
+
+
+
+
+
+        }
+
+        private void timerAnim_Tick(object sender, EventArgs e)
+        {
+            animTick++;
+            appearLabel.BackColor = Color.FromArgb(animTick * 10, Color.FromArgb(0xEE, 0xE4, 0xDA));
+           // labelTime.Font = new Font(labelTime.Font.FontFamily, animTick / 2 + 1);
+            //labelTime.Font = new Font(labelTime.Font.FontFamily, animTick);
+            if (animTick >= 20)
+            {
+                timerAnim.Stop();
+            }
+        }
+
         private void SensoreMove()
         {
             if(Math.Abs(UpPoint.X - DownPoint.X) < Math.Abs(UpPoint.Y - DownPoint.Y))
@@ -444,6 +492,11 @@ namespace WinForms.Forms
                 }
             }
         }
+    }
+
+    class AnimData
+    {
+        public Color BackColor { get; set; }
     }
 
     enum MoveDirection
