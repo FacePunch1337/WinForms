@@ -35,5 +35,19 @@ namespace WinForms.Forms
         {
             Program.Container.Resolve<Forms.ProgressForm>().ShowDialog();
         }
+
+        private void linkLabelCipher_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            this.Hide();
+            Program.Container.Resolve<Forms.CipherForm>().ShowDialog();
+            this.Show();
+        }
+
+        private void linkLabelFractals_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            this.Hide();
+            Program.Container.Resolve<Forms.FractalsForm>().ShowDialog();
+            this.Show();
+        }
     }
 }
