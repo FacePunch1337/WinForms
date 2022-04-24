@@ -31,6 +31,7 @@ namespace WinForms.Forms
             panelTarget.Visible = false;
             
             PASSWORD_CHAR = textBoxPassword.PasswordChar;
+            //Глаз закрыт
             pictureBoxEye.Image = Image.FromFile("pass_eye_close.png");
 
         }
@@ -81,23 +82,29 @@ namespace WinForms.Forms
             MessageBox.Show($"{cipherData.SourceFile}\n »\n{cipherData.TargetFile}");
         }
 
+
+        //"Кнопка" смены состояния отображения пароля
         private void pictureBoxEye_Click(object sender, EventArgs e)
         {
             EyeOpenClose();
         }
 
+
+        //Метод смены состояния отображения пароля
         private void EyeOpenClose()
         {
             if (PASSWORD_CHAR == '\0')
             {
                 PASSWORD_CHAR = '•';
                 textBoxPassword.PasswordChar = PASSWORD_CHAR;
+                //Глаз закрыт
                 pictureBoxEye.Image = Image.FromFile("pass_eye_close.png");
             }
             else
             {
                 PASSWORD_CHAR = '\0';
                 textBoxPassword.PasswordChar = PASSWORD_CHAR;
+                //Глаз открыт
                 pictureBoxEye.Image = Image.FromFile("pass_eye_open.png");
             }
         }
