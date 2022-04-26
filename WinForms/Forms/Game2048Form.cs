@@ -14,20 +14,33 @@ namespace WinForms.Forms
     {
         private readonly Random _random;
         private int stat_value;
+        private int timeMs;
+        private int animTick;                               
+        private Label appearLabel;
+        private GameState state;
+        private List<Label> appearLabelsList { get; set; }  
+        private List<Label> oldLabelsList { get; set; }     
 
         public Game2048Form(Random random)
         {
+            appearLabel = null;
+            appearLabelsList = new List<Label>();
+            oldLabelsList = new List<Label>();
             _random = random;
+            state = new GameState();
             InitializeComponent();
         }
 
         private void Game2048Form_Load(object sender, EventArgs e)
         {
+            timerClock.Start();
             panelGameField.BackColor = Color.FromArgb(0xBB, 0xAD, 0xA0);
             ClearGameField();
             AddCell();
             ColorCells();
             this.ActiveControl = null;
+            SaveState();
+
         }
 
         private void ColorCells()
@@ -100,10 +113,16 @@ namespace WinForms.Forms
 
         private void ClearGameField()
         {
+            timerClock.Stop();
+            timeMs = 0;
+            labelTimer.Text = "00:00:00";
             foreach (var control in panelGameField.Controls)
             {
                 if (control is Label lbl) lbl.Text = "0";
             }
+            AddCell();
+            AddCell();
+            ColorCells();
         }
 
         private void AddCell()
@@ -367,17 +386,37 @@ namespace WinForms.Forms
 
         private void MakeMove(MoveDirection direction)
         {
+            bool wasMove = false;
+            
             switch (direction)
             {
                 case MoveDirection.Left:
-                    if (MoveLeft()) { AddCell(); ColorCells(); return; } break;
+                    wasMove = MoveLeft();
+                    break;
                 case MoveDirection.Right:
-                    if (MoveRight()) { AddCell(); ColorCells(); return; } break;
+                    wasMove = MoveRight();
+                    break;
                 case MoveDirection.Up:
-                    if (MoveUp()) { AddCell(); ColorCells(); return; } break;
+                    wasMove = MoveUp();
+                    break;
                 case MoveDirection.Down:
-                    if (MoveDown()) { AddCell(); ColorCells(); return; } break;
-                
+                    wasMove = MoveDown();
+                    break;
+            }
+
+            if (wasMove)
+            {
+                timerClock.Start();
+                AddCell();
+                ColorCells();
+                SaveState();
+                if (animateToolStripMenuItem.Checked) 
+                {
+                    animTick = 0;
+                    timerAnim.Start();  
+                }
+
+                return;
             }
         }
 
@@ -419,30 +458,151 @@ namespace WinForms.Forms
             SensoreMove();
         }
 
+       
+
+        private void timerClock_Tick(object sender, EventArgs e)
+        {
+            timeMs += timerClock.Interval; // add interval to total time
+            int timeSec = timeMs / 1000;
+            int h = timeSec / 3600;
+            int m = (timeSec / 3600) / 60;
+            int s = timeSec % 60;
+
+            String hours = h < 10 ? "0" + (Convert.ToString(h)) : Convert.ToString(h);
+            String min = m < 10 ? "0" + (Convert.ToString(m)) : Convert.ToString(m);
+            String sec = s < 10 ? "0" + (Convert.ToString(s)) : Convert.ToString(s);
+            labelTimer.Text = $"{hours}:{min}:{sec}";
+        }
+
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (DialogResult.Yes == MessageBox.Show("Начать новую игру?", "New Game", MessageBoxButtons.YesNo))
+            {
+                
+                ClearGameField();
+                
+            }
+        }
+
+        private void rulesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Объеденяйте слоты с одинаковым значением");
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Игра 2048");
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (DialogResult.Yes == MessageBox.Show("Серьёзно?", "Exit Game", MessageBoxButtons.YesNo))
+            {
+                Close();
+            }
+        }
+
+        private void timerAnim_Tick(object sender, EventArgs e)
+        {
+            var animData = appearLabel?.Tag as AnimData;
+            if (animData == null || appearLabel == null || appearLabelsList.Count == 0)
+            {
+                timerAnim.Stop();
+                return;
+            }
+          
+            foreach (var newLabel in appearLabelsList)
+            {
+                if (Convert.ToInt32(newLabel.Text) % 2 == 0 && newLabel.Text != "0")
+                {
+                    newLabel.BackColor = Color.FromArgb(animTick * 10, newLabel.BackColor);
+                    
+                    newLabel.Font = new Font(newLabel.Font.FontFamily, Interpolator.Linear(18, 1, 4 * animTick), FontStyle.Bold); // reduction
+                    newLabel.Font = new Font(newLabel.Font.FontFamily, Interpolator.Linear(1, 18, 4 * animTick), FontStyle.Bold); // increasing
+
+                }
+
+            }
+            animTick++;
+            
+            if (animTick >= 25)
+            {
+                appearLabel.BackColor = animData.BackColor;
+                timerAnim.Stop();
+                appearLabel = null!;
+            }
+        }
+
         private void SensoreMove()
         {
-            if(Math.Abs(UpPoint.X - DownPoint.X) < Math.Abs(UpPoint.Y - DownPoint.Y))
+            if (Math.Abs(UpPoint.X - DownPoint.X) <
+                Math.Abs(UpPoint.Y - DownPoint.Y)) // |dX| < |dY| -  Vertical
             {
-                if(UpPoint.Y < DownPoint.Y) // Up
+                if (UpPoint.Y < DownPoint.Y) // Up
                 {
                     MakeMove(MoveDirection.Up);
                 }
-                else  // Down
+                else // Down
                 {
                     MakeMove(MoveDirection.Down);
                 }
             }
-            else 
+            else // Horizontal
             {
-                if (UpPoint.X < DownPoint.X) //Left
+                if (UpPoint.X < DownPoint.X) // Left
                 {
                     MakeMove(MoveDirection.Left);
                 }
-                else //Right
+                else // Right
                 {
                     MakeMove(MoveDirection.Right);
                 }
             }
+        }
+
+        private void UpdateState()
+        {
+            for (int i = 0; i < 4; i++)
+                for (int j = 0; j < 4; j++)
+                {
+                    // parse field from file to titles
+                    LabelAt(i, j).Text = Convert.ToString(state.Field[i][j]);
+                    ColorCells();
+                }
+        }
+        private void SaveState()
+        {
+            for (int i = 0; i < 4; i++)
+                for (int j = 0; j < 4; j++)
+                {
+                    state.Field[i][j] = int.Parse(LabelAt(i, j).Text);
+                }
+        }
+    }
+    class GameState
+    {
+        public int[][] Field { get; set; }
+        public GameState()
+        {
+            Field = new int[4][];
+            for (int i = 0; i < 4; i++)
+            {
+                Field[i] = new int[4];
+            }
+        }
+    }
+    class AnimData  
+    {
+        public Color BackColor { get; set; }
+    }
+
+    class Interpolator
+    {
+      
+        public static int Linear(int from, int to, int percent)
+        {
+
+            return from + (to - from) * percent / 100;
         }
     }
 
