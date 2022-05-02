@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -19,16 +20,25 @@ namespace WinForms.Forms
         private char PASSWORD_CHAR;
 
         private CipherData cipherData;
+        private CancellationTokenSource cancellationTokenSource;
+
+        private int progressValue; //exchange variable - to show from other thread
+
+
         public CipherForm()
         {
-            cipherData = new CipherData();
-            
             InitializeComponent();
+            cipherData = new CipherData();
+            cancellationTokenSource = null;
+            
+
+
         }
 
         private void CipherForm_Load(object sender, EventArgs e)
         {
             panelTarget.Visible = false;
+            panelProgress.Visible = false;
             
             PASSWORD_CHAR = textBoxPassword.PasswordChar;
             //Глаз закрыт
@@ -79,7 +89,13 @@ namespace WinForms.Forms
 
         private void buttonCipher_Click(object sender, EventArgs e)
         {
-            MessageBox.Show($"{cipherData.SourceFile}\n »\n{cipherData.TargetFile}");
+            //  MessageBox.Show($"{cipherData.SourceFile}\n »\n{cipherData.TargetFile}");
+
+            cipherData.Password = textBoxPassword.Text;
+            cancellationTokenSource = new CancellationTokenSource();
+            progressValue = 0;
+            panelProgress.Visible = true;
+            new Thread(Cipher).Start(new ThreadData { CipherData = cipherData, Token = cancellationTokenSource.Token });
         }
 
 
@@ -109,9 +125,115 @@ namespace WinForms.Forms
             }
         }
 
-       
+
+        //set progress bar to progress value - from any thread   
+        private void UpdateProgress()
+        {
+            lock(progressCipherBar)
+            {
+                progressCipherBar.Value = progressValue;
+            }
+           
+        }
+
+        //cross-thread method for setting panel invisible
+        private void HidePanelProgress()
+        {
+            lock (panelProgress)
+            {
+                if (progressCipherBar.Visible) progressCipherBar.Visible = false;
+            }
+
+        }
+
+
+        private void Cipher(object data)
+        {
+            if (data is null || data is not ThreadData) return;
+            ThreadData tdata = (ThreadData)data;
+
+            if (tdata.CipherData is null) return;
+
+            try
+            {
+                //source file size - for progress bar scaling
+                long fileSize = new FileInfo(tdata.CipherData.SourceFile).Length;
+                //open source file to read
+                using (var reader = new StreamReader(tdata.CipherData.SourceFile))
+                {
+                    //open destination file for writing
+                    using (var writer = new StreamWriter(tdata.CipherData.TargetFile))
+                    {
+                        int cnt = 0;
+                        while (!reader.EndOfStream)
+                        {
+                            char symT = (char)reader.Read();    // text symbol - read from file
+                            char symP = tdata.CipherData.Password[cnt % tdata.CipherData.Password.Length];
+                            char symC = (char)(symT ^ symP);  // cipher symbol
+                            writer.Write(symC);              //write to file
+                            ++cnt;
+
+                            //display progress
+                            progressValue = (int)(cnt * 100 / fileSize); // exchange variable 
+                            Invoke((Action)UpdateProgress);
+
+                            Thread.Sleep(300);
+                            if (tdata.Token.IsCancellationRequested)
+                            {
+                               
+                                if(DialogResult.Yes == MessageBox.Show("Shure", "Cancel", MessageBoxButtons.YesNo))
+                                {
+                                    tdata.Token.ThrowIfCancellationRequested();
+                                }
+                                else
+                                {
+                                    cancellationTokenSource = new CancellationTokenSource();
+                                    tdata.Token = cancellationTokenSource.Token;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                //ciphering finished successfully
+                MessageBox.Show("Open in notepad?", "Сiphering finished successfully", MessageBoxButtons.YesNo);
+               
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            catch (OperationCanceledException)
+            {
+                //MessageBox.Show("Sure?","Сancel", MessageBoxButtons.YesNo);
+                try
+                {
+                    File.Delete(tdata.CipherData.TargetFile); 
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+            }
+            finally
+            {
+                //ciphering finished with any state
+               Invoke((Action)HidePanelProgress);
+            }
+        }
+
+        private void buttonCipherCancel_Click(object sender, EventArgs e)
+        {
+            cancellationTokenSource.Cancel();
+        }
     }
 
+    class ThreadData
+    {
+        public CipherData CipherData { get; set;}
+        public CancellationToken Token { get; set; } 
+    }
 
     class CipherData
     {

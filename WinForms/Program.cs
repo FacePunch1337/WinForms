@@ -40,8 +40,9 @@ namespace WinForms
             Container.RegisterInstance(logger); 
 
 
-            Container.RegisterInstance(new Random()); 
+            Container.RegisterInstance(new Random());
 
+            Container.RegisterType<Services.IRandom, Services.SimpleRandom>();
             
            
 

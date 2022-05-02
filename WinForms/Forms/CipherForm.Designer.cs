@@ -45,13 +45,18 @@ namespace WinForms.Forms
             this.textBoxTargetFileName = new System.Windows.Forms.TextBox();
             this.panelTarget = new System.Windows.Forms.Panel();
             this.pictureBoxEye = new System.Windows.Forms.PictureBox();
+            this.panelProgress = new System.Windows.Forms.Panel();
+            this.buttonCipherCancel = new System.Windows.Forms.Button();
+            this.progressCipherBar = new System.Windows.Forms.ProgressBar();
             this.menuStrip1.SuspendLayout();
             this.panelTarget.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxEye)).BeginInit();
+            this.panelProgress.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
             // 
+            this.menuStrip1.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
@@ -66,20 +71,20 @@ namespace WinForms.Forms
             this.makeSampleToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // makeSampleToolStripMenuItem
             // 
             this.makeSampleToolStripMenuItem.Name = "makeSampleToolStripMenuItem";
-            this.makeSampleToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.makeSampleToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.makeSampleToolStripMenuItem.Text = "Make sample";
             this.makeSampleToolStripMenuItem.Click += new System.EventHandler(this.makeSampleToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             // 
             // openFileDialog1
@@ -89,22 +94,23 @@ namespace WinForms.Forms
             // labelSelectFile
             // 
             this.labelSelectFile.AutoSize = true;
+            this.labelSelectFile.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.labelSelectFile.Location = new System.Drawing.Point(12, 36);
             this.labelSelectFile.Name = "labelSelectFile";
-            this.labelSelectFile.Size = new System.Drawing.Size(66, 15);
+            this.labelSelectFile.Size = new System.Drawing.Size(98, 14);
             this.labelSelectFile.TabIndex = 1;
             this.labelSelectFile.Text = "Select a file";
             // 
             // textBoxSourceFileName
             // 
-            this.textBoxSourceFileName.Location = new System.Drawing.Point(129, 33);
+            this.textBoxSourceFileName.Location = new System.Drawing.Point(145, 32);
             this.textBoxSourceFileName.Name = "textBoxSourceFileName";
             this.textBoxSourceFileName.Size = new System.Drawing.Size(100, 23);
             this.textBoxSourceFileName.TabIndex = 2;
             // 
             // buttonSelectSourceFile
             // 
-            this.buttonSelectSourceFile.Location = new System.Drawing.Point(235, 33);
+            this.buttonSelectSourceFile.Location = new System.Drawing.Point(251, 32);
             this.buttonSelectSourceFile.Name = "buttonSelectSourceFile";
             this.buttonSelectSourceFile.Size = new System.Drawing.Size(28, 23);
             this.buttonSelectSourceFile.TabIndex = 3;
@@ -114,7 +120,7 @@ namespace WinForms.Forms
             // 
             // textBoxPassword
             // 
-            this.textBoxPassword.Location = new System.Drawing.Point(129, 62);
+            this.textBoxPassword.Location = new System.Drawing.Point(145, 61);
             this.textBoxPassword.Name = "textBoxPassword";
             this.textBoxPassword.PasswordChar = '•';
             this.textBoxPassword.Size = new System.Drawing.Size(100, 23);
@@ -124,15 +130,16 @@ namespace WinForms.Forms
             // labelPassword
             // 
             this.labelPassword.AutoSize = true;
+            this.labelPassword.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.labelPassword.Location = new System.Drawing.Point(12, 64);
             this.labelPassword.Name = "labelPassword";
-            this.labelPassword.Size = new System.Drawing.Size(96, 15);
+            this.labelPassword.Size = new System.Drawing.Size(119, 14);
             this.labelPassword.TabIndex = 5;
             this.labelPassword.Text = "Enter a password";
             // 
             // buttonCipher
             // 
-            this.buttonCipher.Location = new System.Drawing.Point(16, 117);
+            this.buttonCipher.Location = new System.Drawing.Point(12, 104);
             this.buttonCipher.Name = "buttonCipher";
             this.buttonCipher.Size = new System.Drawing.Size(62, 23);
             this.buttonCipher.TabIndex = 6;
@@ -180,18 +187,46 @@ namespace WinForms.Forms
             // 
             this.pictureBoxEye.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pictureBoxEye.InitialImage = null;
-            this.pictureBoxEye.Location = new System.Drawing.Point(235, 62);
+            this.pictureBoxEye.Location = new System.Drawing.Point(251, 61);
             this.pictureBoxEye.Name = "pictureBoxEye";
             this.pictureBoxEye.Size = new System.Drawing.Size(28, 23);
             this.pictureBoxEye.TabIndex = 12;
             this.pictureBoxEye.TabStop = false;
             this.pictureBoxEye.Click += new System.EventHandler(this.pictureBoxEye_Click);
             // 
+            // panelProgress
+            // 
+            this.panelProgress.Controls.Add(this.buttonCipherCancel);
+            this.panelProgress.Controls.Add(this.progressCipherBar);
+            this.panelProgress.Location = new System.Drawing.Point(80, 104);
+            this.panelProgress.Name = "panelProgress";
+            this.panelProgress.Size = new System.Drawing.Size(199, 23);
+            this.panelProgress.TabIndex = 13;
+            // 
+            // buttonCipherCancel
+            // 
+            this.buttonCipherCancel.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.buttonCipherCancel.Location = new System.Drawing.Point(171, 0);
+            this.buttonCipherCancel.Name = "buttonCipherCancel";
+            this.buttonCipherCancel.Size = new System.Drawing.Size(28, 23);
+            this.buttonCipherCancel.TabIndex = 1;
+            this.buttonCipherCancel.Text = "X";
+            this.buttonCipherCancel.UseVisualStyleBackColor = true;
+            this.buttonCipherCancel.Click += new System.EventHandler(this.buttonCipherCancel_Click);
+            // 
+            // progressCipherBar
+            // 
+            this.progressCipherBar.Location = new System.Drawing.Point(0, 0);
+            this.progressCipherBar.Name = "progressCipherBar";
+            this.progressCipherBar.Size = new System.Drawing.Size(165, 23);
+            this.progressCipherBar.TabIndex = 0;
+            // 
             // CipherForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.panelProgress);
             this.Controls.Add(this.pictureBoxEye);
             this.Controls.Add(this.panelTarget);
             this.Controls.Add(this.buttonCipher);
@@ -204,12 +239,14 @@ namespace WinForms.Forms
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "CipherForm";
             this.Text = "CipherForm";
+            this.TopMost = true;
             this.Load += new System.EventHandler(this.CipherForm_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.panelTarget.ResumeLayout(false);
             this.panelTarget.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxEye)).EndInit();
+            this.panelProgress.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -233,5 +270,8 @@ namespace WinForms.Forms
         private System.Windows.Forms.TextBox textBoxTargetFileName;
         private System.Windows.Forms.Panel panelTarget;
         private System.Windows.Forms.PictureBox pictureBoxEye;
+        private System.Windows.Forms.Panel panelProgress;
+        private System.Windows.Forms.Button buttonCipherCancel;
+        private System.Windows.Forms.ProgressBar progressCipherBar;
     }
 }

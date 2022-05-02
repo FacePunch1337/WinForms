@@ -34,6 +34,7 @@ namespace WinForms.Forms
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.linkLabelCipher = new System.Windows.Forms.LinkLabel();
             this.linkLabelFractals = new System.Windows.Forms.LinkLabel();
+            this.linkLabelHash = new System.Windows.Forms.LinkLabel();
             this.SuspendLayout();
             // 
             // linkLabelToControl
@@ -91,11 +92,23 @@ namespace WinForms.Forms
             this.linkLabelFractals.Text = "Фракталы";
             this.linkLabelFractals.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelFractals_LinkClicked);
             // 
+            // linkLabelHash
+            // 
+            this.linkLabelHash.AutoSize = true;
+            this.linkLabelHash.Location = new System.Drawing.Point(15, 159);
+            this.linkLabelHash.Name = "linkLabelHash";
+            this.linkLabelHash.Size = new System.Drawing.Size(84, 15);
+            this.linkLabelHash.TabIndex = 5;
+            this.linkLabelHash.TabStop = true;
+            this.linkLabelHash.Text = "Хеширование";
+            this.linkLabelHash.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelHash_LinkClicked);
+            // 
             // PortalForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.linkLabelHash);
             this.Controls.Add(this.linkLabelFractals);
             this.Controls.Add(this.linkLabelCipher);
             this.Controls.Add(this.linkLabel1);
@@ -115,5 +128,6 @@ namespace WinForms.Forms
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.LinkLabel linkLabelCipher;
         private System.Windows.Forms.LinkLabel linkLabelFractals;
+        private System.Windows.Forms.LinkLabel linkLabelHash;
     }
 }

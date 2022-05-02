@@ -49,5 +49,13 @@ namespace WinForms.Forms
             Program.Container.Resolve<Forms.FractalsForm>().ShowDialog();
             this.Show();
         }
+      
+
+        private void linkLabelHash_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            this.Hide();
+            Program.Container.Resolve<Forms.HashForm>().ShowDialog();
+            this.Show();
+        }
     }
 }
